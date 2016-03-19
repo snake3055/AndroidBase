@@ -26,7 +26,9 @@ import java.nio.channels.Selector;
 public class IOUtils {
 
     /**
-     * InputStream -> byte[]
+     * stream转byte
+     * @param is 输入流
+     * @return byte字节
      */
     public static byte[] transInputStreamToByteArray(InputStream is) {
         if (null == is) {

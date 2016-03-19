@@ -6,17 +6,21 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.WindowManager;
 
+import com.gistandard.androidbase.R;
 import com.gistandard.androidbase.event.ExitAppEvent;
 import com.gistandard.androidbase.http.BaseResponse;
 import com.gistandard.androidbase.http.BaseTask;
 import com.gistandard.androidbase.http.IResponseListener;
 import com.gistandard.androidbase.http.ResponseCode;
+import com.gistandard.androidbase.utils.LogCat;
 import com.gistandard.androidbase.utils.ToastUtils;
 import com.umeng.analytics.MobclickAgent;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+
 
 /**
  * Description: Activity基类，该App中所有其他Activity必须继承该类
@@ -198,7 +202,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IRespons
     @Override
     public void onTaskError(long requestId, int responseCode, String responseMsg) {
         if (!isFinishing()) {
-            ToastUtils.toastShort(ResponseCode.getErrorMessage(this, responseCode, responseMsg));
+            ToastUtils.toastShort(getErrorMessage(this, responseCode, responseMsg));
             dismissWaitingDlg();
         }
     }
@@ -212,4 +216,36 @@ public abstract class BaseActivity extends AppCompatActivity implements IRespons
             finish();
         }
     };
+
+    /**
+     * 获取系统错误信息
+     * @param context 上下文
+     * @param responseCode 响应码
+     * @param responseMsg 响应消息
+     * @return 错误信息
+     */
+    private String getErrorMessage(Context context, int responseCode, String responseMsg) {
+        if (!TextUtils.isEmpty(responseMsg) || ResponseCode.RESPONSE_CODE_SUCCESS == responseCode)
+            return responseMsg;
+
+        if (null == context) {
+            LogCat.e("ResponseCode", "==== Context invalid ====");
+            return "";
+        }
+
+        switch (responseCode) {
+            case ResponseCode.RESPONSE_ERROR_NETWORK:
+                return getString(R.string.error_network);
+
+            case ResponseCode.RESPONSE_ERROR_PARSE:
+                return getString(R.string.error_parse);
+
+            case ResponseCode.RESPONSE_ERROR_SERVER:
+                return getString(R.string.error_server);
+
+            case ResponseCode.RESPONSE_ERROR_DEFAULT:
+            default:
+                return getString(R.string.error_system);
+        }
+    }
 }

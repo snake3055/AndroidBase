@@ -18,7 +18,7 @@ public class DisplayUtils {
      * 将px值转换为dip或dp值，保证尺寸大小不变
      *
      * @param pxValue
-     * @return
+     * @return dp
      */
     public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -29,7 +29,7 @@ public class DisplayUtils {
      * 将dip或dp值转换为px值，保证尺寸大小不变
      *
      * @param dipValue
-     * @return
+     * @return px
      */
     public static int dip2px(Context context, float dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -40,7 +40,7 @@ public class DisplayUtils {
      * 将px值转换为sp值，保证文字大小不变
      *
      * @param pxValue
-     * @return
+     * @return sp
      */
     public static int px2sp(Context context, float pxValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
@@ -51,7 +51,7 @@ public class DisplayUtils {
      * 将sp值转换为px值，保证文字大小不变
      *
      * @param spValue
-     * @return
+     * @return px
      */
     public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
@@ -73,6 +73,11 @@ public class DisplayUtils {
         return size;
     }
 
+    /**
+     * 获取屏幕亮度
+     * @param activity 上下文
+     * @return 亮度值
+     */
     public static float getScreenBrightness(Activity activity) {
         float value = 0;
         ContentResolver cr = activity.getContentResolver();
@@ -112,6 +117,11 @@ public class DisplayUtils {
         return wakeLock;
     }
 
+    /**
+     * 获取手机DPI
+     * @param activity 上下文
+     * @return DIP值
+     */
     public static String getPhoneDpi(Activity activity) {
         DisplayMetrics dm = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);

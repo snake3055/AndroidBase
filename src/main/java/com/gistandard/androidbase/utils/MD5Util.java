@@ -17,11 +17,6 @@ import java.security.NoSuchAlgorithmException;
 
 
 public class MD5Util {
-	
-	/**
-	 * 123456加密后是：123456:E10ADC3949BA59ABBE56E057F20F883E
-	 */
-	
 
 	/** * 16进制字符集 */
 	private static final char HEX_DIGITS[] = { '0', '1', '2', '3', '4', '5',
@@ -371,12 +366,10 @@ public class MD5Util {
      * 功能描述: <br>
      * 文件sha1值的计算 适用于上G大的文件 〈功能详细描述〉
      * 
-     * @param path
-     * @return
+     * @param path 路径
      * @throws OutOfMemoryError
      * @throws IOException
-     * @see [相关类/方法](可选)
-     * @since [产品/模块版本](可选)
+	 * @return sha1字符
      */
     public static String getFileSha1(String path) throws OutOfMemoryError, IOException {
         File file = new File(path);
@@ -413,8 +406,6 @@ public class MD5Util {
      * 
      * @param b
      * @return
-     * @see [相关类/方法](可选)
-     * @since [产品/模块版本](可选)
      */
     public static String byte2hex(byte[] b) {
         StringBuffer hs = new StringBuffer(b.length);

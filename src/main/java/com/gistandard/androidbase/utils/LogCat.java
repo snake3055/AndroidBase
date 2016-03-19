@@ -23,8 +23,7 @@ public class LogCat {
 
     /**
      * 是否输出日志，默认不输出
-     * true: 输出日志
-     * false: 不输出日志
+     * @param output true: 输出日志 false: 不输出日志
      */
     public static void setOutputLog(boolean output) {
         outputLog = output;
@@ -32,9 +31,9 @@ public class LogCat {
 
     /**
      * v方法
-     * @param TAG
-     * @param format
-     * @param args
+     * @param TAG 标记
+     * @param format 格式
+     * @param args 参数
      */
     public static void v(String TAG, String format, Object... args) {
         if (outputLog)
@@ -43,9 +42,9 @@ public class LogCat {
 
     /**
      * d方法
-     * @param TAG
-     * @param format
-     * @param args
+     * @param TAG 标记
+     * @param format 格式
+     * @param args 参数
      */
     public static void d(String TAG, String format, Object... args) {
         if (outputLog)
@@ -54,9 +53,9 @@ public class LogCat {
 
     /**
      * i方法
-     * @param TAG
-     * @param format
-     * @param args
+     * @param TAG 标记
+     * @param format 格式
+     * @param args 参数
      */
     public static void i(String TAG, String format, Object... args) {
         if (outputLog)
@@ -65,9 +64,9 @@ public class LogCat {
 
     /**
      * w方法
-     * @param TAG
-     * @param format
-     * @param args
+     * @param TAG 标记
+     * @param format 格式
+     * @param args 参数
      */
     public static void w(String TAG, String format, Object... args) {
         if (outputLog)
@@ -76,9 +75,9 @@ public class LogCat {
 
     /**
      * e方法，不记录异常
-     * @param TAG
-     * @param format
-     * @param args
+     * @param TAG 标记
+     * @param format 格式
+     * @param args 参数
      */
     public static void e(String TAG, String format, Object... args) {
         if (outputLog)

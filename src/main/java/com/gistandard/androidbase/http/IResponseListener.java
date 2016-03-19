@@ -1,7 +1,5 @@
 package com.gistandard.androidbase.http;
 
-import com.gistandard.androidbase.http.BaseResponse;
-
 /**
  * Description:服务端响应回调接口
  * Name:         IResponseListener
@@ -13,9 +11,7 @@ public interface IResponseListener {
 
     /**
      * 服务端返回响应码成功回调接口
-     *
-     * @param @param response
-     * @return void
+     * @param response
      */
     public void onTaskSuccess(BaseResponse response);
 

@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gistandard.androidbase.http.BaseResponse;
-import com.gistandard.androidbase.http.ResponseCode;
 import com.gistandard.androidbase.http.IResponseListener;
-import com.gistandard.androidbase.utils.ToastUtils;
 
 /**
  * Description:Fragment基类，该App种所有Fragment需要统一继承该基类
@@ -97,9 +95,7 @@ public abstract class BaseFragment extends Fragment implements IResponseListener
 
     /**
      * 服务端返回响应码成功回调接口
-     *
-     * @param @param response 服务端返回结果
-     * @return void
+     * @param response 服务端返回结果
      */
     @Override
     public void onTaskSuccess(BaseResponse response) {
@@ -109,7 +105,6 @@ public abstract class BaseFragment extends Fragment implements IResponseListener
 
     /**
      * 服务端返回错误回调接口
-     *
      * @param requestId    请求ID
      * @param responseCode 错误码
      * @param responseMsg  错误信息
@@ -117,8 +112,7 @@ public abstract class BaseFragment extends Fragment implements IResponseListener
     @Override
     public void onTaskError(long requestId, int responseCode, String responseMsg) {
         if (!isFragmentDestroy) {
-            ToastUtils.toastShort(ResponseCode.getErrorMessage(getActivity(), responseCode, responseMsg));
-            getBaseActivity().dismissWaitingDlg();
+            getBaseActivity().onTaskError(requestId, responseCode, responseMsg);
         }
     }
 
