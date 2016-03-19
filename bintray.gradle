@@ -1,0 +1,95 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+def siteUrl = 'https://github.com/snake3055/AndroidBase'
+def gitUrl = 'https://github.com/snake3055/AndroidBase.git'
+def issueTrackerUrl = 'https://github.com/snake3055/AndroidBase/issues'
+
+group = "com.gistandard.androidbase"
+version = "1.0.0"
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                name 'Base for android project'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution "repo"
+                    }
+                }
+                developers {
+                    developer {
+                        id 'snake3055'
+                        name 'jingming_z'
+                        email 'snake3055@163.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+android.libraryVariants.all { variant ->
+    println variant.javaCompile.classpath.files
+    if (variant.name == 'release') {
+        task sourcesJar(type: Jar) {
+            from variant.javaCompile.source
+            classifier = 'sources'
+        }
+        task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
+            source = variant.javaCompile.source
+            classpath = files(variant.javaCompile.classpath.files, project.android.getBootClasspath())
+            options {
+                encoding "utf-8"
+                links "http://docs.oracle.com/javase/7/docs/api/"
+                linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
+            }
+            exclude '**/BuildConfig.java'
+            exclude '**/R.java'
+            exclude '**/StringUtils.java'
+            exclude '**/BaseActivity.java'
+            exclude '**/BaseFragment.java'
+        }
+        task("javadoc${variant.name.capitalize()}Jar", type: Jar, dependsOn: "generate${variant.name.capitalize()}Javadoc") {
+            classifier = 'javadoc'
+            from tasks.getByName("generate${variant.name.capitalize()}Javadoc").destinationDir
+        }
+        artifacts {
+            archives tasks.getByName("javadoc${variant.name.capitalize()}Jar")
+            archives sourcesJar
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty('bintray.user')
+    key = properties.getProperty('bintray.apikey')
+    configurations = ['archives']
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = 'androidbase'
+        websiteUrl = siteUrl
+        issueTrackerUrl = ''
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publicDownloadNumbers = true
+        version {
+            name = '1.0.0'
+            desc = 'Gistandard android base 1.0.0'
+        }
+    }
+}
