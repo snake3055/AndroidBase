@@ -20,7 +20,7 @@ public class SPUtils {
 
     /**
      * 获取本地缓存对象
-     * @return SharedPreferences
+     * @param context 上下文
      */
     public static void initPreferences(Context context) {
         if (null == sharedPreferences)
