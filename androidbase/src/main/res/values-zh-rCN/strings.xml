@@ -1,0 +1,10 @@
+<resources>
+    <!-- 网络请求 -->
+    <string name="network_msg_waiting">正在发送请求，请稍候...</string>
+
+    <!-- 错误信息 -->
+    <string name="error_system">系统错误，请重试</string>
+    <string name="error_parse">参数错误，请重试</string>
+    <string name="error_network">网络无法连接，请检查网络</string>
+    <string name="error_server">服务器错误，请重试</string>
+</resources>
