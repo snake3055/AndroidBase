@@ -20,6 +20,7 @@ import com.gistandard.androidbase.utils.ToastUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 
 /**
@@ -212,6 +213,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IRespons
      */
     private Object exitAppListener = new Object() {
 
+        @Subscribe
         public void onEvent(ExitAppEvent exitAppEvent) {
             finish();
         }
