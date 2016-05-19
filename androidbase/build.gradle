@@ -124,7 +124,7 @@ bintray {
         licenses = ["Apache-2.0"]
         publicDownloadNumbers = true
         version {
-            name = version
+            name = "1.0.3"
             desc = 'Gistandard android base ' + version
         }
     }

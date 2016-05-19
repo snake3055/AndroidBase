@@ -61,8 +61,8 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
     // 响应消息监听对象
     private IResponseListener responseListener;
 
-    // 默认数据类型
-    private final static String DEFAULT_CONTENT_TYPE = "application/json";
+    // json数据类型
+    private final static String JSON_CONTENT_TYPE = "application/json; charset=";
 
     // 默认超时时间
     private final static int DEFAULT_TIMEOUT = 15 * 1000;
@@ -132,6 +132,7 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
                         return null;
                     }
                 }
+
                 return super.getBody();
             }
 
@@ -142,12 +143,15 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return super.getHeaders();
+                return buildHeader();
             }
 
             @Override
             public String getBodyContentType() {
-                return DEFAULT_CONTENT_TYPE;
+                if (null == params)
+                    return JSON_CONTENT_TYPE + getParamsEncoding();
+                else
+                    return super.getBodyContentType();
             }
 
             @Override
