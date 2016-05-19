@@ -23,4 +23,7 @@ public class ResponseCode {
 
     // 网络连接错误码
     public static final int RESPONSE_ERROR_NETWORK = 0x1003;
+
+    // 网络连接超时
+    public static final int RESPONSE_ERROR_TIMEOUT = 0x1004;
 }

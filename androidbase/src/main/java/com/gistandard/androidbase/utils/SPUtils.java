@@ -2,6 +2,7 @@ package com.gistandard.androidbase.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import java.util.Set;
 
@@ -26,6 +27,19 @@ public class SPUtils {
         if (null == sharedPreferences)
             sharedPreferences = context.getSharedPreferences(context.getPackageName(),
                     Context.MODE_PRIVATE);
+    }
+
+    /**
+     * 设置本地缓存对象，包名+自定义命名
+     * @param context 上下文
+     * @param name 包名_name
+     */
+    public static void setPreferences(Context context, String name) {
+        if (TextUtils.isEmpty(name))
+            return;
+
+        sharedPreferences = context.getSharedPreferences(context.getPackageName() + "_" + name,
+                Context.MODE_PRIVATE);
     }
 
     /**

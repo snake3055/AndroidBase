@@ -1,11 +1,23 @@
 <resources>
 
-    <!-- 网络请求 -->
+    <!-- 網絡請求 -->
     <string name="network_msg_waiting">正在發送請求，請稍候...</string>
 
-    <!-- 错误信息 -->
+    <!-- 錯誤信息 -->
     <string name="error_system">系統錯誤，請重試</string>
     <string name="error_parse">參數錯誤，請重試</string>
-    <string name="error_network">網絡無法連接，請檢查網絡</string>
+    <string name="error_network">網絡錯誤，請重試</string>
     <string name="error_server">服務器錯誤，請重試</string>
+    <string name="error_timeout">網絡連接超時，請重試</string>
+
+    <!-- 單位 -->
+    <string name="unit_weight_kg">千克</string>
+    <string name="unit_volume_m">立方米</string>
+    <string name="unit_rmb_yuan">元</string>
+    <string name="unit_cm">厘米</string>
+    <string name="unit_m">米</string>
+    <string name="unit_km">公裏</string>
+    <string name="unit_qian_km">千公裏</string>
+    <string name="unit_wan_km">萬公裏</string>
+
 </resources>

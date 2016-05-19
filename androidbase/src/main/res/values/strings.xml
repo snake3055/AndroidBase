@@ -8,6 +8,7 @@
     <string name="error_parse">参数错误，请重试</string>
     <string name="error_network">网络错误，请重试</string>
     <string name="error_server">服务器错误，请重试</string>
+    <string name="error_timeout">网络连接超时，请重试</string>
 
     <!-- 单位 -->
     <string name="unit_weight_kg">千克</string>

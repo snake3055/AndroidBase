@@ -7,4 +7,5 @@
     <string name="error_parse">参数错误，请重试</string>
     <string name="error_network">网络无法连接，请检查网络</string>
     <string name="error_server">服务器错误，请重试</string>
+    <string name="error_timeout">网络连接超时，请重试</string>
 </resources>

@@ -245,6 +245,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IRespons
             case ResponseCode.RESPONSE_ERROR_SERVER:
                 return getString(R.string.error_server);
 
+            case ResponseCode.RESPONSE_ERROR_TIMEOUT:
+                return getString(R.string.error_timeout);
+
             case ResponseCode.RESPONSE_ERROR_DEFAULT:
             default:
                 return getString(R.string.error_system);
