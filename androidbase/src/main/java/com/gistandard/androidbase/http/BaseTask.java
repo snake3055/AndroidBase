@@ -143,7 +143,8 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return buildHeader();
+                Map<String, String> headMap = buildHeader();
+                return null == headMap ? super.getHeaders() : headMap;
             }
 
             @Override
