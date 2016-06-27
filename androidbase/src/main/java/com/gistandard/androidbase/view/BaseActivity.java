@@ -17,7 +17,6 @@ import com.gistandard.androidbase.http.IResponseListener;
 import com.gistandard.androidbase.http.ResponseCode;
 import com.gistandard.androidbase.utils.LogCat;
 import com.gistandard.androidbase.utils.ToastUtils;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -77,15 +76,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IRespons
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
-        MobclickAgent.onPageStart(getClass().getSimpleName());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
-        MobclickAgent.onPageEnd(getClass().getSimpleName());
     }
 
     /**
@@ -179,6 +174,26 @@ public abstract class BaseActivity extends AppCompatActivity implements IRespons
 
         task.cancel();
         dismissWaitingDlg();
+    }
+
+    /**
+     * 判断任务请求ID是否匹配
+     * @param task 任务对象
+     * @param response 响应对象
+     * @return true:匹配 false:不匹配
+     */
+    public boolean isTaskMath(BaseTask task, BaseResponse response) {
+        return (null != task && task.match(response));
+    }
+
+    /**
+     * 判断任务请求ID是否匹配
+     * @param task 任务对象
+     * @param requestId 请求ID
+     * @return true:匹配 false:不匹配
+     */
+    public boolean isTaskMath(BaseTask task, long requestId) {
+        return (null != task && task.match(requestId));
     }
 
     /**

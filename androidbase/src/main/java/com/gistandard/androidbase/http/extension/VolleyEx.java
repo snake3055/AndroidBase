@@ -28,7 +28,6 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HttpStack;
-import com.android.volley.toolbox.HurlStack;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 
@@ -71,7 +70,7 @@ public class VolleyEx {
                 try {
                     // allow all ssl connection
                     HttpsURLConnection.setDefaultHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-                    stack = new HurlStack(null, new SSLSocketFactoryEx());
+                    stack = new HurlStackEx(null, new SSLSocketFactoryEx());
                 }
                 catch (Exception e) {
                     // TODO Auto-generated catch block

@@ -5,9 +5,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.gistandard.androidbase.http.BaseResponse;
+import com.gistandard.androidbase.http.IResponseListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +20,44 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+//        SPUtils.setPreferences(this, "");
+//        boolean test_boolean = SPUtils.getBoolean("TEST_BOOLEAN", false);
+//        SPUtils.putBoolean("TEST_BOOLEAN", false);
+//        test_boolean = SPUtils.getBoolean("TEST_BOOLEAN", false);
+//        SPUtils.setPreferences(this, "test");
+//        test_boolean = SPUtils.getBoolean("TEST_BOOLEAN", false);
+//        SPUtils.remove("TEST_BOOLEAN");
+//        test_boolean = SPUtils.getBoolean("TEST_BOOLEAN", false);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setAccount("CN0002519840327131109");
+        loginRequest.setPassword("12345678aA");
+        LoginTask loginTask = new LoginTask(loginRequest, new IResponseListener() {
+            @Override
+            public void onTaskSuccess(BaseResponse response) {
+
+            }
+
+            @Override
+            public void onTaskError(long requestId, int responseCode, String responseMsg) {
+
+            }
+        });
+        loginTask.excute(this);
+
+        IMLoginTask task = new IMLoginTask(new IMLoginRequest(), new IResponseListener() {
+            @Override
+            public void onTaskSuccess(BaseResponse response) {
+
+            }
+
+            @Override
+            public void onTaskError(long requestId, int responseCode, String responseMsg) {
+
+            }
+        });
+        task.excute(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -7,7 +7,7 @@ def gitUrl = 'https://github.com/snake3055/AndroidBase.git'
 def issueTrackerUrl = 'https://github.com/snake3055/AndroidBase/issues'
 
 group = "com.gistandard.androidbase"
-version = "1.0.3"
+version = "1.0.5"
 
 android {
     compileSdkVersion 23
@@ -35,13 +35,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.volley:volley:1.0.0'
-    compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.android.support:design:23+'
     compile 'com.android.support:appcompat-v7:23+'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.alibaba:fastjson:1.2.8'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile files('libs/afinal_0.5.1_bin.jar')
 }
 
 install {
@@ -124,7 +122,7 @@ bintray {
         licenses = ["Apache-2.0"]
         publicDownloadNumbers = true
         version {
-            name = "1.0.3"
+            name = "1.0.5"
             desc = 'Gistandard android base ' + version
         }
     }

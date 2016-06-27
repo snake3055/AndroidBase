@@ -6,21 +6,28 @@ import com.alibaba.fastjson.JSON;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.gistandard.androidbase.application.IApplication;
+import com.gistandard.androidbase.http.extension.MultipartEntity;
+import com.gistandard.androidbase.http.extension.RequestEx;
 import com.gistandard.androidbase.utils.LogCat;
 import com.gistandard.androidbase.utils.NetworkKit;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Description:http网络请求任务基类，只适用于非上传下载的普通网络请求
@@ -29,10 +36,10 @@ import java.util.Map;
  * Date:         2015-12-23
  */
 
-public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> implements Response.Listener, Response.ErrorListener {
+public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> implements com.android.volley.Response.Listener, com.android.volley.Response.ErrorListener {
 
     // 日志tag
-    protected final String LOG_TAG = this.getClass().getSimpleName();
+    protected final String LOG_TAG = getClass().getSimpleName();
 
     // 请求消息体
     protected T request;
@@ -49,20 +56,17 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
     // 是否缓存
     private boolean shouldCached = false;
 
-    // 超时时间
-    private int timeOut = DEFAULT_TIMEOUT;
-
-    // 重试次数
-    private int retryCount = DEFAULT_RETRY_COUNT;
-
     // 网络请求队列
     private final static RequestQueue requestQueue = IApplication.getRequestQueue();
 
     // 响应消息监听对象
     private IResponseListener responseListener;
 
-    // json数据类型
-    private final static String JSON_CONTENT_TYPE = "application/json; charset=";
+    // 超时时间
+    private int timeOut = DEFAULT_TIMEOUT;
+
+    // 重连次数
+    private int retryCount = DEFAULT_RETRY_COUNT;
 
     // 默认超时时间
     private final static int DEFAULT_TIMEOUT = 15 * 1000;
@@ -94,78 +98,25 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
             return;
         }
 
-        requestQueue.add(buildRequest());
+        String url = getURL();
+        LogCat.i(LOG_TAG, "request url: %s", url);
+        StringRequestEx stringRequestEx = new StringRequestEx(getURL(), this);
+        stringRequestEx.setShouldCache(shouldCached);
+        stringRequestEx.setRetryPolicy(new DefaultRetryPolicy(timeOut, retryCount, 0));
+        requestQueue.add(stringRequestEx);
     }
 
     /**
-     * 构造volley请求
-     * @return 请求体
+     * 获取日志tag
+     * @return 日志tag
      */
-    private StringRequest buildRequest() {
-        final Map params = buildMessage(request);
-        final String url = getURL();
-        LogCat.i(LOG_TAG, "request url: %s", url);
-        StringRequest stringRequest = new StringRequest(url, this, this) {
-            @Override
-            public int getMethod() {
-                Integer method = BaseTask.this.getMethod();
-                if (null != method)
-                    return method.intValue();
-                else {
-                    if (null == params && null == request)
-                        return Method.GET;
-                    else
-                        return Method.POST;
-                }
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                if (null == params && null != request) {
-                    String strJson = JSON.toJSONString(request);
-                    LogCat.d(LOG_TAG, strJson);
-                    try {
-                        return strJson.getBytes(getParamsEncoding());
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                        responseListener.onTaskError(requestId, ResponseCode.RESPONSE_ERROR_PARSE, "");
-                        return null;
-                    }
-                }
-
-                return super.getBody();
-            }
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headMap = buildHeader();
-                return null == headMap ? super.getHeaders() : headMap;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                if (null == params)
-                    return JSON_CONTENT_TYPE + getParamsEncoding();
-                else
-                    return super.getBodyContentType();
-            }
-
-            @Override
-            public RetryPolicy getRetryPolicy() {
-                return new DefaultRetryPolicy(timeOut, retryCount, 0);
-            }
-        };
-        stringRequest.setShouldCache(shouldCached);
-        return stringRequest;
+    public String getLogTag() {
+        return LOG_TAG;
     }
 
     /**
      * 设置是否需要缓存
+     *
      * @param shouldCached true:保存该次请求的response，下次请求时使用缓存 false:不缓存
      */
     public void setShouldCached(boolean shouldCached) {
@@ -174,6 +125,7 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
 
     /**
      * 设置超时时间，默认为15s
+     *
      * @param timeOut 超时时间
      */
     public void setTimeOut(int timeOut) {
@@ -182,6 +134,7 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
 
     /**
      * 设置重连次数，默认值为0
+     *
      * @param retryCount 重连次数
      */
     public void setRetryCount(int retryCount) {
@@ -193,8 +146,9 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
      * 只有cancelable=true才能成功
      */
     public void cancel() {
-        if (isCancelable())
+        if (isCancelable()) {
             isCanceled = true;
+        }
     }
 
     /**
@@ -254,6 +208,10 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
      */
     public String getURL() {
         return getBaseURL() + getURLPath();
+    }
+
+    private T getRequest() {
+        return this.request;
     }
 
     /**
@@ -360,10 +318,11 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
      * @param request 请求数据
      * @return 消息体
      */
-    protected abstract Map<String, String> buildMessage(final T request);
+    protected abstract Map<String, Object> buildMessage(final T request);
 
     /**
      * 构造请求报文头部
+     *
      * @return 报文头
      */
     protected abstract Map<String, String> buildHeader();
@@ -374,4 +333,137 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
      * @return 请求类型
      */
     protected abstract Integer getMethod();
+
+    /**
+     * A canned request for retrieving the response body at a given URL as a String.
+     */
+    private static class StringRequestEx extends RequestEx<String> {
+        private final BaseTask callback;
+        private Map<String, Object> params;
+        private MultipartEntity multipartEntity;
+
+        // json数据类型
+        private final static String JSON_CONTENT_TYPE = "application/json; charset=";
+
+        /**
+         * Creates a new request with the given method.
+         *
+         * @param url    URL to fetch the string at
+         * @param callback 回调
+         */
+        public StringRequestEx(String url, BaseTask callback) {
+            super(url, callback);
+            this.callback = callback;
+            this.params = callback.buildMessage(callback.getRequest());
+        }
+
+        @Override
+        protected void deliverResponse(String response) {
+            callback.onResponse(response);
+        }
+
+        @Override
+        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            String parsed;
+            try {
+                parsed = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            } catch (UnsupportedEncodingException e) {
+                parsed = new String(response.data);
+            }
+            return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
+        }
+
+        @Override
+        public int getMethod() {
+            Integer method = callback.getMethod();
+            if (null != method)
+                return method.intValue();
+            else {
+                if (null == params && null == callback.getRequest())
+                    return Method.GET;
+                else
+                    return Method.POST;
+            }
+        }
+
+        @Override
+        public byte[] getBody() throws AuthFailureError {
+            if (null == params) {
+                String strJson = JSON.toJSONString(callback.getRequest());
+                LogCat.d(callback.getLogTag(), strJson);
+                try {
+                    return strJson.getBytes(getParamsEncoding());
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    callback.onErrorResponse(new ParseError());
+                    return null;
+                }
+            }
+
+            byte[] body = super.getBody();
+            LogCat.i(callback.getLogTag(), "request body: %s", new String(body));
+            return super.getBody();
+        }
+
+        @Override
+        public InputStream getMultipartBody() throws AuthFailureError, IOException {
+            if (null != params) {
+                multipartEntity = new MultipartEntity();
+                int currentIndex = 0;
+                int lastIndex = params.entrySet().size() - 1;
+
+                for (Map.Entry<String, Object> entry : params.entrySet()) {
+                    if (null != entry) {
+                        Object value = entry.getValue();
+                        boolean isLast = currentIndex == lastIndex;
+                        if (value instanceof String)
+                            multipartEntity.addPart(entry.getKey(), (String) value, isLast);
+                        else if (value instanceof File)
+                            multipartEntity.addPart(entry.getKey(), ((File) value).getName(), new FileInputStream((File) value), isLast);
+                        else if (value instanceof InputStream)
+                            multipartEntity.addPart(entry.getKey(), "nofilename", (InputStream) value, isLast);
+                        else
+                            throw new AuthFailureError();
+                    }
+                    currentIndex++;
+                }
+
+                return multipartEntity.getContent();
+            }
+            return super.getMultipartBody();
+        }
+
+
+        @Override
+        protected Map<String, String> getParams() throws AuthFailureError {
+            Map<String, String> tempParams = new ConcurrentHashMap<>();
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                if (null != entry) {
+                    Object value = entry.getValue();
+                    if (value instanceof String)
+                        tempParams.put(entry.getKey(), (String) value);
+                    else
+                        throw new AuthFailureError();
+                }
+            }
+            return tempParams;
+        }
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            Map<String, String> headMap = callback.buildHeader();
+            return null == headMap ? super.getHeaders() : headMap;
+        }
+
+        @Override
+        public String getBodyContentType() {
+            if (null != multipartEntity)
+                return multipartEntity.getContentType().getValue();
+
+            if (null == params && null != callback.getRequest())
+                return JSON_CONTENT_TYPE + getParamsEncoding();
+            else
+                return super.getBodyContentType();
+        }
+    }
 }
