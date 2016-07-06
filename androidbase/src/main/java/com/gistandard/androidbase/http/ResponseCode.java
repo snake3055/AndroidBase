@@ -10,7 +10,7 @@ package com.gistandard.androidbase.http;
 public class ResponseCode {
 
     // 成功状态码
-    public static final int RESPONSE_CODE_SUCCESS = 1;
+    public static final int RESPONSE_CODE_SUCCESS = 0;
 
     // 默认错误码
     public static final int RESPONSE_ERROR_DEFAULT = 0x1000;
