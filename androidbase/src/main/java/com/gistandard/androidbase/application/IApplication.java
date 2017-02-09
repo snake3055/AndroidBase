@@ -70,7 +70,6 @@ public class IApplication extends Application {
     /**
      * 获取https keystore
      * @return keystore
-     * @throws Exception 异常
      */
     public KeyStore getKeyStore() {
         return null;

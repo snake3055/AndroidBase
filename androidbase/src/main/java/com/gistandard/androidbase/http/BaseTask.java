@@ -57,7 +57,7 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
     private boolean shouldCached = false;
 
     // 网络请求队列
-    private final static RequestQueue requestQueue = IApplication.getRequestQueue();
+    private RequestQueue requestQueue = IApplication.getRequestQueue();
 
     // 响应消息监听对象
     private IResponseListener responseListener;
@@ -149,6 +149,14 @@ public abstract class BaseTask<T extends BaseRequest, V extends BaseResponse> im
         if (isCancelable()) {
             isCanceled = true;
         }
+    }
+
+    /**
+     * 设置自定义消息请求队列，独立开发中使用
+     * @param requestQueue 请求队列
+     */
+    public void setRequestQueue(RequestQueue requestQueue) {
+        this.requestQueue = requestQueue;
     }
 
     /**

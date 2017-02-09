@@ -15,6 +15,7 @@ public class DateUtils {
 
     public static final String DAY_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm:ss";
+    public final static String PLAY_TIME_FORMAT = "mm:ss";
 
     public static Date str2Date(String str) {
         return str2Date(str, null);

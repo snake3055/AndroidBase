@@ -344,6 +344,42 @@ public class StringUtils {
     }
 
     /**
+     * 转化文件大小为字符串
+     * @param size 文件大小
+     * @return Byte、KB、MB、GB、TB等尺寸字符串
+     */
+    public static String formatSize(double size) {
+        if (0 == size)
+            return "0";
+
+        double kiloByte = size / 1024;
+        if (kiloByte < 1) {
+            return size + "Byte(s)";
+        }
+
+        double megaByte = kiloByte / 1024;
+        if (megaByte < 1) {
+            BigDecimal result1 = new BigDecimal(Double.toString(kiloByte));
+            return result1.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "KB";
+        }
+
+        double gigaByte = megaByte / 1024;
+        if (gigaByte < 1) {
+            BigDecimal result2 = new BigDecimal(Double.toString(megaByte));
+            return result2.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "MB";
+        }
+
+        double teraBytes = gigaByte / 1024;
+        if (teraBytes < 1) {
+            BigDecimal result3 = new BigDecimal(Double.toString(gigaByte));
+            return result3.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "GB";
+        }
+
+        BigDecimal result4 = new BigDecimal(teraBytes);
+        return result4.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "TB";
+    }
+
+    /**
      * Description:转换阿拉伯数字为汉字
      * @param @param strNum
      * @param @return
